@@ -1,19 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
     const SHEET_ID = '1fTzvrBsRQMY_X-dYt-mpjDYv3S2AzYkzybEWkt4lXMI';
     const SHEET_NAME = 'Sheet1';
-    const API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`;
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
     fetch(url)
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => {
-            const events = data.values.slice(1).map(row => ({
-                date: row[0],
-                time: row[1],
-                location: row[2],
-                description: row[3],
-                isPast: new Date(row[0]) < new Date()
+            // Remove the extra text around the JSON
+            const jsonData = JSON.parse(data.substring(47).slice(0, -2));
+            
+            const events = jsonData.table.rows.map(row => ({
+                date: row.c[0].v,
+                time: row.c[1].v,
+                location: row.c[2].v,
+                description: row.c[3].v,
+                isPast: new Date(row.c[0].v) < new Date()
             }));
 
             const upcomingList = document.getElementById('upcoming-events-list');
