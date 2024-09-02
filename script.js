@@ -52,6 +52,7 @@ function handleEventsResponse(response) {
             date: date,
             time: row.c[1].f.replace('klo ', ''),
             location: row.c[2].v,
+            description: row.c[3] ? row.c[3].v : '',
             isPast: date < new Date()
         };
     });
@@ -62,7 +63,10 @@ function handleEventsResponse(response) {
     events.forEach(event => {
         const li = document.createElement('li');
         const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
-        li.innerHTML = `<strong>${formattedDate} ${event.time}</strong> - ${event.location}`;
+        li.innerHTML = `
+            <strong>${formattedDate} ${event.time}</strong> - ${event.location}
+            <p>${event.description}</p>
+        `;
         
         if (event.isPast) {
             pastList.appendChild(li);
