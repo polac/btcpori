@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "btcpori"
+version = "0.1.0"
+description = ""
+authors = ["Mika Impola <mika@cervid.fi>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "<3.13,^3.9"
+aider-chat = "^0.54.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
