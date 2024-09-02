@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const SHEET_ID = '1fTzvrBsRQMY_X-dYt-mpjDYv3S2AzYkzybEWkt4lXMI';
     const SHEET_NAME = 'Sheet1';
 
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&callback=handleResponse`;
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
     // Add loading indicator
     const loadingIndicator = document.createElement('p');
@@ -10,19 +10,26 @@ document.addEventListener('DOMContentLoaded', function() {
     loadingIndicator.id = 'loading-indicator';
     document.getElementById('events').appendChild(loadingIndicator);
 
-    const script = document.createElement('script');
-    script.src = url;
-    document.body.appendChild(script);
+    fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            // Extract the JSON from the JSONP response
+            const jsonData = JSON.parse(data.substring(47).slice(0, -2));
+            handleResponse(jsonData);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            handleError();
+        });
 });
 
 function handleResponse(response) {
     const jsonData = response.table;
     
     const events = jsonData.rows.map(row => ({
-        date: row.c[0].v,
-        time: row.c[1].v,
+        date: new Date(row.c[0].v),
+        time: row.c[1].f,
         location: row.c[2].v,
-        description: row.c[3].v,
         isPast: new Date(row.c[0].v) < new Date()
     }));
 
@@ -31,7 +38,8 @@ function handleResponse(response) {
 
     events.forEach(event => {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${event.date} ${event.time}</strong> - ${event.location}: ${event.description}`;
+        const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
+        li.innerHTML = `<strong>${formattedDate} ${event.time}</strong> - ${event.location}`;
         
         if (event.isPast) {
             pastList.appendChild(li);
@@ -54,7 +62,6 @@ function handleResponse(response) {
     }
 }
 
-// Error handling function
 function handleError() {
     console.error('Error fetching events');
     const errorMessage = document.createElement('p');
@@ -68,10 +75,3 @@ function handleError() {
         loadingIndicator.remove();
     }
 }
-
-// Set a timeout for error handling
-setTimeout(function() {
-    if (!window.handleResponse.called) {
-        handleError();
-    }
-}, 5000); // 5 seconds timeout
