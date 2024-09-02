@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const SHEET_ID = '1fTzvrBsRQMY_X-dYt-mpjDYv3S2AzYkzybEWkt4lXMI';
     const EVENTS_SHEET_NAME = 'Sheet1';
-    const ABOUT_SHEET_NAME = 'Sheet2';
+    const ABOUT_SHEET_NAME = 'Taulukko2';
 
     const eventsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${EVENTS_SHEET_NAME}`;
     const aboutUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${ABOUT_SHEET_NAME}`;
