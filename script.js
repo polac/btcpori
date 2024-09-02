@@ -3,8 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const SHEET_NAME = 'Sheet1';
 
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+    const corsProxyUrl = 'https://cors-anywhere.herokuapp.com/';
 
-    fetch(url)
+    fetch(corsProxyUrl + url)
         .then(response => response.text())
         .then(data => {
             // Remove the extra text around the JSON
@@ -31,6 +32,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     upcomingList.appendChild(li);
                 }
             });
+
+            // Remove loading indicator
+            const loadingIndicator = document.getElementById('loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+
+            // Display a message if there are no events
+            if (events.length === 0) {
+                const noEventsMessage = document.createElement('p');
+                noEventsMessage.textContent = 'Ei tapahtumia tällä hetkellä.';
+                document.getElementById('events').appendChild(noEventsMessage);
+            }
         })
-        .catch(error => console.error('Error fetching events:', error));
+        .catch(error => {
+            console.error('Error fetching events:', error);
+            const errorMessage = document.createElement('p');
+            errorMessage.textContent = 'Tapahtumien lataaminen epäonnistui. Yritä myöhemmin uudelleen.';
+            errorMessage.style.color = 'red';
+            document.getElementById('events').appendChild(errorMessage);
+        });
+
+    // Add loading indicator
+    const loadingIndicator = document.createElement('p');
+    loadingIndicator.textContent = 'Ladataan tapahtumia...';
+    loadingIndicator.id = 'loading-indicator';
+    document.getElementById('events').appendChild(loadingIndicator);
 });
