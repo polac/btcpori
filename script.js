@@ -26,12 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
 function handleResponse(response) {
     const jsonData = response.table;
     
-    const events = jsonData.rows.map(row => ({
-        date: new Date(row.c[0].v),
-        time: row.c[1].f,
-        location: row.c[2].v,
-        isPast: new Date(row.c[0].v) < new Date()
-    }));
+    const events = jsonData.rows.map(row => {
+        const dateParts = row.c[0].v.match(/\d+/g).map(Number);
+        const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+        return {
+            date: date,
+            time: row.c[1].f.replace('klo ', ''),
+            location: row.c[2].v,
+            isPast: date < new Date()
+        };
+    });
 
     const upcomingList = document.getElementById('upcoming-events-list');
     const pastList = document.getElementById('past-events-list');
