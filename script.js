@@ -1,29 +1,48 @@
 document.addEventListener('DOMContentLoaded', function() {
     const SHEET_ID = '1fTzvrBsRQMY_X-dYt-mpjDYv3S2AzYkzybEWkt4lXMI';
-    const SHEET_NAME = 'Sheet1';
+    const EVENTS_SHEET_NAME = 'Sheet1';
+    const ABOUT_SHEET_NAME = 'Sheet2';
 
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+    const eventsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${EVENTS_SHEET_NAME}`;
+    const aboutUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${ABOUT_SHEET_NAME}`;
 
-    // Add loading indicator
-    const loadingIndicator = document.createElement('p');
-    loadingIndicator.textContent = 'Ladataan tapahtumia...';
-    loadingIndicator.id = 'loading-indicator';
-    document.getElementById('events').appendChild(loadingIndicator);
+    // Add loading indicators
+    addLoadingIndicator('events', 'Ladataan tapahtumia...');
+    addLoadingIndicator('about', 'Ladataan tietoja...');
 
-    fetch(url)
+    // Fetch events data
+    fetch(eventsUrl)
         .then(response => response.text())
         .then(data => {
-            // Extract the JSON from the JSONP response
             const jsonData = JSON.parse(data.substring(47).slice(0, -2));
-            handleResponse(jsonData);
+            handleEventsResponse(jsonData);
         })
         .catch(error => {
-            console.error('Error:', error);
-            handleError();
+            console.error('Error fetching events:', error);
+            handleError('events');
+        });
+
+    // Fetch about data
+    fetch(aboutUrl)
+        .then(response => response.text())
+        .then(data => {
+            const jsonData = JSON.parse(data.substring(47).slice(0, -2));
+            handleAboutResponse(jsonData);
+        })
+        .catch(error => {
+            console.error('Error fetching about info:', error);
+            handleError('about');
         });
 });
 
-function handleResponse(response) {
+function addLoadingIndicator(sectionId, text) {
+    const loadingIndicator = document.createElement('p');
+    loadingIndicator.textContent = text;
+    loadingIndicator.id = `loading-indicator-${sectionId}`;
+    document.getElementById(sectionId).appendChild(loadingIndicator);
+}
+
+function handleEventsResponse(response) {
     const jsonData = response.table;
     
     const events = jsonData.rows.map(row => {
@@ -52,11 +71,7 @@ function handleResponse(response) {
         }
     });
 
-    // Remove loading indicator
-    const loadingIndicator = document.getElementById('loading-indicator');
-    if (loadingIndicator) {
-        loadingIndicator.remove();
-    }
+    removeLoadingIndicator('events');
 
     // Display a message if there are no events
     if (events.length === 0) {
@@ -66,15 +81,24 @@ function handleResponse(response) {
     }
 }
 
-function handleError() {
-    console.error('Error fetching events');
-    const errorMessage = document.createElement('p');
-    errorMessage.textContent = 'Tapahtumien lataaminen epäonnistui. Yritä myöhemmin uudelleen.';
-    errorMessage.style.color = 'red';
-    document.getElementById('events').appendChild(errorMessage);
+function handleAboutResponse(response) {
+    const jsonData = response.table;
+    const aboutContent = jsonData.rows[0].c[0].v;
+    document.getElementById('about-content').innerHTML = aboutContent;
+    removeLoadingIndicator('about');
+}
 
-    // Remove loading indicator
-    const loadingIndicator = document.getElementById('loading-indicator');
+function handleError(sectionId) {
+    console.error(`Error fetching ${sectionId} data`);
+    const errorMessage = document.createElement('p');
+    errorMessage.textContent = `${sectionId === 'events' ? 'Tapahtumien' : 'Tietojen'} lataaminen epäonnistui. Yritä myöhemmin uudelleen.`;
+    errorMessage.style.color = 'red';
+    document.getElementById(sectionId).appendChild(errorMessage);
+    removeLoadingIndicator(sectionId);
+}
+
+function removeLoadingIndicator(sectionId) {
+    const loadingIndicator = document.getElementById(`loading-indicator-${sectionId}`);
     if (loadingIndicator) {
         loadingIndicator.remove();
     }
