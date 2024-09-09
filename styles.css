@@ -67,21 +67,14 @@ main {
 }
 
 .section-title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
     margin-bottom: 20px;
-}
-
-.section-icon {
-    width: 30px;
-    height: 30px;
-    margin: 0 10px;
 }
 
 h2 {
     color: #1a1a1a;
     margin: 0;
+    padding: 10px 0;
 }
 
 #events {
