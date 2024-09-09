@@ -11,8 +11,8 @@ docker build -t $IMAGE_NAME .
 # Create tar archive of the image
 docker save $IMAGE_NAME | gzip > ${IMAGE_NAME}.tar.gz
 
-# Transfer the archive to the server using rsync over SSH with progress bar
-rsync -avz --progress ${IMAGE_NAME}.tar.gz $SERVER_ADDRESS:$REMOTE_PATH
+# Transfer the archive to the server using rsync over SSH with detailed progress
+rsync -avz --progress=2 ${IMAGE_NAME}.tar.gz $SERVER_ADDRESS:$REMOTE_PATH
 
 # Execute commands on the remote server
 ssh $SERVER_ADDRESS << EOF
