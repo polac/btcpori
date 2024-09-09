@@ -1,6 +1,6 @@
 [[package]]
 name = "aider-chat"
-version = "0.54.12"
+version = "0.55.0"
 description = "Aider is AI pair programming in your terminal"
 category = "main"
 optional = false
@@ -527,9 +527,6 @@ category = "main"
 optional = false
 python-versions = ">=3.8"
 
-[package.dependencies]
-zipp = {version = ">=3.1.0", markers = "python_version < \"3.10\""}
-
 [package.extras]
 check = ["pytest-checkdocs (>=2.4)", "pytest-ruff (>=0.2.1)"]
 cover = ["pytest-cov"]
@@ -966,7 +963,6 @@ python-versions = ">=3.8"
 [package.dependencies]
 packaging = ">=20"
 tomli = {version = ">=1", markers = "python_version < \"3.11\""}
-typing-extensions = {version = "*", markers = "python_version < \"3.10\""}
 
 [package.extras]
 docs = ["entangled-cli (>=2.0,<3.0)", "mkdocs", "mkdocs-entangled-plugin", "mkdocs-material", "mkdocstrings", "pygments"]
@@ -1160,8 +1156,8 @@ type = ["pytest-mypy"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = "<3.13,^3.9"
-content-hash = "de65d378c5dff80bdeb19d8db76ed071a708d303e69eafa381f485fb0ed45b42"
+python-versions = "^3.10,<3.13"
+content-hash = "fbe572fb4904c58e20545ebe57c34152b5bdf4e16c8974d16dabba03050a1c9f"
 
 [metadata.files]
 aider-chat = []

@@ -6,8 +6,8 @@ authors = ["Mika Impola <mika@cervid.fi>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "<3.13,^3.9"
-aider-chat = "^0.54.12"
+python = "^3.10,<3.13"
+aider-chat = "^0.55.0"
 
 
 [build-system]
