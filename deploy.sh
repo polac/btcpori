@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Set variables
-IMAGE_NAME="your_image_name"
-SERVER_ADDRESS="user@your_server_address"
-REMOTE_PATH="/path/on/remote/server"
+IMAGE_NAME="btcpori"
+SERVER_ADDRESS="mika@serveri"
+REMOTE_PATH="/tmp/mika_images"
 
 # Build Docker image
 docker build -t $IMAGE_NAME .
