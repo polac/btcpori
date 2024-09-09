@@ -20,13 +20,13 @@ ssh $SERVER_ADDRESS << EOF
     cd $REMOTE_PATH
     
     # Load the Docker image from the archive
-    docker load < ${IMAGE_NAME}.tar.gz
+    #docker load < ${IMAGE_NAME}.tar.gz
     
     # Remove the archive file after loading
-    rm ${IMAGE_NAME}.tar.gz
+    #rm ${IMAGE_NAME}.tar.gz
     
     # Run the container (modify as needed)
-    docker run -d $IMAGE_NAME
+    #docker run -d $IMAGE_NAME
 EOF
 
 # Clean up local archive
