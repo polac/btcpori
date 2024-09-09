@@ -59,7 +59,7 @@ function handleEventsResponse(response) {
     
     const events = jsonData.rows.map(row => {
         const dateParts = row.c[0].v.match(/\d+/g).map(Number);
-        const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+        const date = new Date(dateParts[0], dateParts[1], dateParts[2]);
         return {
             date: date,
             time: row.c[1].f.replace('klo ', ''),
