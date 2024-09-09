@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const EVENTS_SHEET_NAME = 'Sheet1';
     const ABOUT_SHEET_NAME = 'Taulukko2';
 
-    const eventsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${EVENTS_SHEET_NAME}`;
-    const aboutUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${ABOUT_SHEET_NAME}`;
+    const eventsUrl = `/events_data.json`;
+    const aboutUrl = `/about_data.json`;
 
     // Add loading indicators
     addLoadingIndicator('events', 'Ladataan tapahtumia...');
