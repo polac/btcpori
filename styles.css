@@ -117,18 +117,22 @@ footer a:hover {
     text-decoration: underline;
 }
 
-.share-button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
-    margin: 4px 2px;
+.share-icons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.share-icon {
+    width: 24px;
+    height: 24px;
     cursor: pointer;
-    border-radius: 3px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.share-icon:hover {
+    transform: scale(1.1);
 }
 
 .modal {
