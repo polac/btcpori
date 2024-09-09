@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const eventsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${EVENTS_SHEET_NAME}`;
     const aboutUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${ABOUT_SHEET_NAME}`;
 
-
     // Add loading indicators
     addLoadingIndicator('events', 'Ladataan tapahtumia...');
     addLoadingIndicator('about', 'Ladataan tietoja...');
@@ -34,6 +33,18 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching about info:', error);
             handleError('about');
         });
+
+    // Set up modal close functionality
+    const modal = document.getElementById('share-modal');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
 });
 
 function addLoadingIndicator(sectionId, text) {
@@ -48,7 +59,7 @@ function handleEventsResponse(response) {
     
     const events = jsonData.rows.map(row => {
         const dateParts = row.c[0].v.match(/\d+/g).map(Number);
-        const date = new Date(dateParts[0], dateParts[1], dateParts[2]);
+        const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
         return {
             date: date,
             time: row.c[1].f.replace('klo ', ''),
@@ -67,6 +78,7 @@ function handleEventsResponse(response) {
         li.innerHTML = `
             <strong>${formattedDate} ${event.time}</strong> - ${event.location}
             <p>${event.description}</p>
+            <button class="share-button" onclick="showShareModal('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')">Jaa</button>
         `;
         
         if (event.isPast) {
@@ -107,4 +119,29 @@ function removeLoadingIndicator(sectionId) {
     if (loadingIndicator) {
         loadingIndicator.remove();
     }
+}
+
+function showShareModal(date, time, location, description) {
+    const modal = document.getElementById('share-modal');
+    const shareButtons = document.getElementById('share-buttons');
+    shareButtons.innerHTML = ''; // Clear previous buttons
+
+    const eventText = `BTC Pori tapahtuma: ${date} ${time} - ${location}. ${description}`;
+    const encodedText = encodeURIComponent(eventText);
+
+    const shareOptions = [
+        { name: 'Facebook', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodedText}` },
+        { name: 'Twitter', url: `https://twitter.com/intent/tweet?text=${encodedText}` },
+        { name: 'LinkedIn', url: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=BTC%20Pori%20Tapahtuma&summary=${encodedText}` },
+        { name: 'WhatsApp', url: `https://wa.me/?text=${encodedText}` }
+    ];
+
+    shareOptions.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = `Jaa ${option.name}`;
+        button.onclick = () => window.open(option.url, '_blank');
+        shareButtons.appendChild(button);
+    });
+
+    modal.style.display = 'block';
 }
