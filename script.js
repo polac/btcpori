@@ -75,9 +75,13 @@ function handleEventsResponse(response) {
     events.forEach(event => {
         const li = document.createElement('li');
         const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
-        li.innerHTML = `
+        let eventHtml = `
             <strong>${formattedDate} ${event.time}</strong> - ${event.location}
             <p>${event.description}</p>
+        `;
+        
+        if (!event.isPast) {
+            eventHtml += `
             <div class="share-icons">
                 <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Facebookissa"></i>
                 <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Twitterissä"></i>
@@ -85,7 +89,10 @@ function handleEventsResponse(response) {
                 <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa WhatsAppissa"></i>
                 <i class="fas fa-link share-icon" onclick="copyEventLink('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Kopioi linkki"></i>
             </div>
-        `;
+            `;
+        }
+        
+        li.innerHTML = eventHtml;
         
         if (event.isPast) {
             pastList.appendChild(li);
