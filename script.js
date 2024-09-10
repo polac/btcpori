@@ -79,10 +79,11 @@ function handleEventsResponse(response) {
             <strong>${formattedDate} ${event.time}</strong> - ${event.location}
             <p>${event.description}</p>
             <div class="share-icons">
-                <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on Facebook"></i>
-                <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on Twitter"></i>
-                <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on LinkedIn"></i>
-                <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on WhatsApp"></i>
+                <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Facebookissa"></i>
+                <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Twitterissä"></i>
+                <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa LinkedInissä"></i>
+                <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa WhatsAppissa"></i>
+                <i class="fas fa-link share-icon" onclick="copyEventLink('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Kopioi linkki"></i>
             </div>
         `;
         
@@ -142,4 +143,15 @@ function shareEvent(platform, date, time, location, description) {
     if (shareUrl) {
         window.open(shareUrl, '_blank');
     }
+}
+
+function copyEventLink(date, time, location, description) {
+    const eventText = `BTC Pori tapahtuma: ${date} ${time} - ${location}. ${description}`;
+    const tempInput = document.createElement('input');
+    tempInput.value = eventText;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    alert('Tapahtuman tiedot kopioitu leikepöydälle!');
 }

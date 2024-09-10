@@ -150,6 +150,10 @@ footer a:hover {
     color: #25d366;
 }
 
+.fa-link {
+    color: #808080;
+}
+
 .modal {
     display: none;
     position: fixed;
