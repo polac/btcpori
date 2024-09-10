@@ -125,14 +125,29 @@ footer a:hover {
 }
 
 .share-icon {
-    width: 24px;
-    height: 24px;
+    font-size: 24px;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .share-icon:hover {
     transform: scale(1.1);
+}
+
+.fa-facebook {
+    color: #3b5998;
+}
+
+.fa-twitter {
+    color: #1da1f2;
+}
+
+.fa-linkedin {
+    color: #0077b5;
+}
+
+.fa-whatsapp {
+    color: #25d366;
 }
 
 .modal {

@@ -79,10 +79,10 @@ function handleEventsResponse(response) {
             <strong>${formattedDate} ${event.time}</strong> - ${event.location}
             <p>${event.description}</p>
             <div class="share-icons">
-                <img src="data/facebook-icon.png" alt="Share on Facebook" class="share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')">
-                <img src="data/twitter-icon.png" alt="Share on Twitter" class="share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')">
-                <img src="data/linkedin-icon.png" alt="Share on LinkedIn" class="share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')">
-                <img src="data/whatsapp-icon.png" alt="Share on WhatsApp" class="share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')">
+                <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on Facebook"></i>
+                <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on Twitter"></i>
+                <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on LinkedIn"></i>
+                <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Share on WhatsApp"></i>
             </div>
         `;
         
@@ -131,23 +131,14 @@ function shareEvent(platform, date, time, location, description) {
     const encodedText = encodeURIComponent(eventText);
     const currentUrl = encodeURIComponent(window.location.href);
 
-    let shareUrl;
+    const shareUrls = {
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}&quote=${encodedText}`,
+        twitter: `https://twitter.com/intent/tweet?text=${encodedText}`,
+        linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${currentUrl}&title=BTC%20Pori%20Tapahtuma&summary=${encodedText}`,
+        whatsapp: `https://wa.me/?text=${encodedText}`
+    };
 
-    switch (platform) {
-        case 'facebook':
-            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}&quote=${encodedText}`;
-            break;
-        case 'twitter':
-            shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
-            break;
-        case 'linkedin':
-            shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${currentUrl}&title=BTC%20Pori%20Tapahtuma&summary=${encodedText}`;
-            break;
-        case 'whatsapp':
-            shareUrl = `https://wa.me/?text=${encodedText}`;
-            break;
-    }
-
+    const shareUrl = shareUrls[platform];
     if (shareUrl) {
         window.open(shareUrl, '_blank');
     }
