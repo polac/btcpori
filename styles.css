@@ -77,6 +77,15 @@ h2 {
     padding: 10px 0;
 }
 
+#about, #telegram-invite {
+    margin-top: 40px;
+    text-align: center;
+}
+
+#about-content, #telegram-invite p {
+    text-align: left;
+}
+
 #events {
     margin-top: 40px;
 }
