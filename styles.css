@@ -117,6 +117,34 @@ footer a:hover {
     text-decoration: underline;
 }
 
+#telegram-invite {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.telegram-button {
+    display: inline-block;
+    background-color: #0088cc;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.telegram-button:hover {
+    background-color: #006699;
+}
+
+.telegram-button i {
+    margin-right: 5px;
+}
+
 .share-icons {
     display: flex;
     justify-content: flex-start;
