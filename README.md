@@ -17,15 +17,35 @@ This approach allows us to explore and demonstrate the current capabilities and 
 
 ### Local Development
 
-To run the development server:
+#### Setting up Poetry Environment
 
-1. Make sure you have Python installed on your system
-2. Navigate to the project directory
-3. Run the local server:
+1. First, install Poetry if you haven't already:
+   ```bash
+   curl -sSL https://install.python-poetry.org | python3 -
+   ```
+
+2. Clone the repository and navigate to the project directory:
+   ```bash
+   git clone https://github.com/polac/btcpori.git
+   cd btcpori
+   ```
+
+3. Create and activate the Poetry environment:
+   ```bash
+   poetry install
+   poetry shell
+   ```
+
+#### Running the Development Server
+
+Once your environment is set up:
+
+1. Make sure you're in the project directory with an activated environment
+2. Run the local server:
    ```bash
    python local_server.py
    ```
-4. Open your browser and visit `http://localhost:8000`
+3. Open your browser and visit `http://localhost:8000`
 
 The server will start and host the website locally for development purposes.
 
