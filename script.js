@@ -60,12 +60,15 @@ function handleEventsResponse(response) {
     const events = jsonData.rows.map(row => {
         const dateParts = row.c[0].v.match(/\d+/g).map(Number);
         const date = new Date(dateParts[0], dateParts[1], dateParts[2]);
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);  // Set to start of today
+        
         return {
             date: date,
             time: row.c[1].f.replace('klo ', ''),
             location: row.c[2].v,
             description: row.c[3] ? row.c[3].v : '',
-            isPast: date < new Date()
+            isPast: date < now  // Compare with start of today
         };
     });
 
