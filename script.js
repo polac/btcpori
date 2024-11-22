@@ -56,24 +56,49 @@ function addLoadingIndicator(sectionId, text) {
 
 function handleEventsResponse(response) {
     const jsonData = response.table;
+    console.log('Received data:', jsonData); // Debug log
     
     const events = jsonData.rows.map(row => {
-        const dateParts = row.c[0].v.match(/\d+/g).map(Number);
-        const date = new Date(dateParts[0], dateParts[1], dateParts[2]);
-        const now = new Date();
-        now.setHours(0, 0, 0, 0);  // Set to start of today
+        console.log('Processing row:', row); // Debug log
         
-        return {
-            date: date,
-            time: row.c[1].f.replace('klo ', ''),
-            location: row.c[2].v,
-            description: row.c[3] ? row.c[3].v : '',
-            isPast: date < now  // Compare with start of today
-        };
-    });
+        // Check if row data exists and has the expected structure
+        if (!row || !row.c || !row.c[0] || !row.c[0].v) {
+            console.warn('Invalid row data:', row);
+            return null;
+        }
+        
+        try {
+            const dateParts = row.c[0].v.match(/\d+/g).map(Number);
+            const date = new Date(dateParts[0], dateParts[1], dateParts[2]);
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);  // Set to start of today
+            
+            return {
+                date: date,
+                time: row.c[1] && row.c[1].f ? row.c[1].f.replace('klo ', '') : '',
+                location: row.c[2] && row.c[2].v ? row.c[2].v : '',
+                description: row.c[3] && row.c[3].v ? row.c[3].v : '',
+                isPast: date < now
+            };
+        } catch (error) {
+            console.error('Error processing row:', error, row);
+            return null;
+        }
+    }).filter(event => event !== null); // Remove any null events
 
     const upcomingList = document.getElementById('upcoming-events-list');
     const pastList = document.getElementById('past-events-list');
+
+    // Clear existing events
+    upcomingList.innerHTML = '';
+    pastList.innerHTML = '';
+
+    if (events.length === 0) {
+        const noEvents = document.createElement('li');
+        noEvents.textContent = 'Ei tapahtumia tällä hetkellä';
+        upcomingList.appendChild(noEvents);
+        return;
+    }
 
     events.forEach(event => {
         const li = document.createElement('li');
