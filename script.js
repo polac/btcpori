@@ -113,36 +113,14 @@ function handleEventsResponse(response) {
     // Add upcoming events to the list
     upcomingEvents.forEach(event => {
         const li = document.createElement('li');
-        const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
-        let eventHtml = `
-            <strong>${formattedDate} ${event.time}</strong> - ${event.location}
-            <p>${event.description}</p>
-        `;
-        
-        eventHtml += `
-        <div class="share-icons">
-            <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Facebookissa"></i>
-            <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Twitterissä"></i>
-            <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa LinkedInissä"></i>
-            <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa WhatsAppissa"></i>
-            <i class="fas fa-link share-icon" onclick="copyEventLink('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Kopioi linkki"></i>
-        </div>
-        `;
-        
-        li.innerHTML = eventHtml;
+        li.innerHTML = createEventListItem(event, true);
         upcomingList.appendChild(li);
     });
     
     // Add past events to the list (already sorted latest to oldest)
     pastEvents.forEach(event => {
         const li = document.createElement('li');
-        const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
-        let eventHtml = `
-            <strong>${formattedDate} ${event.time}</strong> - ${event.location}
-            <p>${event.description}</p>
-        `;
-        
-        li.innerHTML = eventHtml;
+        li.innerHTML = createEventListItem(event, false);
         pastList.appendChild(li);
     });
 
@@ -177,6 +155,28 @@ function removeLoadingIndicator(sectionId) {
     if (loadingIndicator) {
         loadingIndicator.remove();
     }
+}
+
+function createEventListItem(event, showShareIcons = true) {
+    const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
+    let eventHtml = `
+        <strong>${formattedDate} ${event.time}</strong> - ${event.location}
+        <p>${event.description}</p>
+    `;
+    
+    if (showShareIcons) {
+        eventHtml += `
+        <div class="share-icons">
+            <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Facebookissa"></i>
+            <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Twitterissä"></i>
+            <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa LinkedInissä"></i>
+            <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa WhatsAppissa"></i>
+            <i class="fas fa-link share-icon" onclick="copyEventLink('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Kopioi linkki"></i>
+        </div>
+        `;
+    }
+    
+    return eventHtml;
 }
 
 function shareEvent(platform, date, time, location, description) {
