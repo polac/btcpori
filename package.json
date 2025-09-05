@@ -1,0 +1,23 @@
+{
+    "name": "btcpori",
+    "version": "1.0.0",
+    "description": "BTC Pori website",
+    "private": true,
+    "scripts": {
+        "lint": "npm run lint:js && npm run lint:css && npm run lint:html",
+        "lint:js": "eslint '**/*.js'",
+        "lint:css": "stylelint '**/*.css'",
+        "lint:html": "htmlhint '**/*.html'",
+        "lint:fix": "eslint '**/*.js' --fix && stylelint '**/*.css' --fix",
+        "format": "prettier --write '**/*.{js,css,html,json,md}'",
+        "format:check": "prettier --check '**/*.{js,css,html,json,md}'"
+    },
+    "devDependencies": {
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "htmlhint": "^1.1.4",
+        "prettier": "^3.3.3",
+        "stylelint": "^16.9.0",
+        "stylelint-config-standard": "^36.0.1"
+    }
+}

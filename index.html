@@ -1,68 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC Pori</title>
-    <link rel="icon" href="data/bear_no_bg.png" type="image/png">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="page-container">
-        <header>
-            <img src="data/tunnelma.png" alt="BTC Pori tunnelma" class="header-image">
-            <div class="header-overlay"></div>
-            <div class="header-content">
-                <h1>BTC Pori</h1>
-            </div>
-        </header>
-        <main>
-        <section id="about">
-            <div class="section-title">
-                <h2>Tietoa meistä</h2>
-            </div>
-            <div id="about-content"></div>
-        </section>
-        <section id="telegram-invite">
-            <div class="section-title">
-                <h2>Liity keskusteluun</h2>
-            </div>
-            <p>Tule mukaan Telegram-ryhmäämme keskustelemaan ja kysymään lisätietoja!</p>
-            <a href="https://t.me/+TnYX9CDCyWgzYTFk" target="_blank" class="telegram-button">
-                <i class="fab fa-telegram"></i> Liity BTC Pori Telegram-ryhmään
-            </a>
-        </section>
-        <section id="events">
-            <div class="section-title">
-                <h2>Tapahtumat</h2>
-            </div>
-            <div id="upcoming-events">
-                <h3>Tulevat tapahtumat</h3>
-                <ul id="upcoming-events-list"></ul>
-            </div>
-            <div id="past-events">
-                <h3>Menneet tapahtumat</h3>
-                <ul id="past-events-list"></ul>
-            </div>
-        </section>
-        <div id="share-modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Jaa tapahtuma</h2>
-                <div id="share-buttons"></div>
-            </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>BTC Pori</title>
+        <link rel="icon" href="data/bear_no_bg.png" type="image/png" />
+        <link rel="stylesheet" href="styles.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div class="page-container">
+            <header>
+                <img src="data/tunnelma.png" alt="BTC Pori tunnelma" class="header-image" />
+                <div class="header-overlay"></div>
+                <div class="header-content">
+                    <h1>BTC Pori</h1>
+                </div>
+            </header>
+            <main>
+                <section id="about">
+                    <div class="section-title">
+                        <h2>Tietoa meistä</h2>
+                    </div>
+                    <div id="about-content"></div>
+                </section>
+                <section id="telegram-invite">
+                    <div class="section-title">
+                        <h2>Liity keskusteluun</h2>
+                    </div>
+                    <p>Tule mukaan Telegram-ryhmäämme keskustelemaan ja kysymään lisätietoja!</p>
+                    <a
+                        href="https://t.me/+TnYX9CDCyWgzYTFk"
+                        target="_blank"
+                        class="telegram-button"
+                    >
+                        <i class="fab fa-telegram"></i> Liity BTC Pori Telegram-ryhmään
+                    </a>
+                </section>
+                <section id="events">
+                    <div class="section-title">
+                        <h2>Tapahtumat</h2>
+                    </div>
+                    <div id="upcoming-events">
+                        <h3>Tulevat tapahtumat</h3>
+                        <ul id="upcoming-events-list"></ul>
+                    </div>
+                    <div id="past-events">
+                        <h3>Menneet tapahtumat</h3>
+                        <ul id="past-events-list"></ul>
+                    </div>
+                </section>
+                <div id="share-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2>Jaa tapahtuma</h2>
+                        <div id="share-buttons"></div>
+                    </div>
+                </div>
+            </main>
+            <footer>
+                <p>&copy; 2024 BTC Pori. Kaikki oikeudet pidätetään.</p>
+                <p class="github-link">
+                    <a
+                        href="https://github.com/polac/btcpori"
+                        target="_blank"
+                        title="View source on GitHub"
+                    >
+                        <i class="fab fa-github"></i> Source on GitHub
+                    </a>
+                </p>
+            </footer>
         </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 BTC Pori. Kaikki oikeudet pidätetään.</p>
-            <p class="github-link">
-                <a href="https://github.com/polac/btcpori" target="_blank" title="View source on GitHub">
-                    <i class="fab fa-github"></i> Source on GitHub
-                </a>
-            </p>
-        </footer>
-    </div>
-    <script src="script.js"></script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>

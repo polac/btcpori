@@ -1,0 +1,93 @@
+name: Lint and Format Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [master]
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint:js
+        continue-on-error: true
+        id: eslint
+
+      - name: Run Stylelint
+        run: npm run lint:css
+        continue-on-error: true
+        id: stylelint
+
+      - name: Run HTMLHint
+        run: npm run lint:html
+        continue-on-error: true
+        id: htmlhint
+
+      - name: Check Prettier formatting
+        run: npm run format:check
+        continue-on-error: true
+        id: prettier
+
+      - name: Report results
+        if: always()
+        run: |
+          echo "## Linting and Formatting Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ steps.eslint.outcome }}" == "success" ]]; then
+            echo "✅ ESLint: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ ESLint: Failed - Run \`npm run lint:fix\` to auto-fix issues" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ steps.stylelint.outcome }}" == "success" ]]; then
+            echo "✅ Stylelint: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Stylelint: Failed - Run \`npm run lint:fix\` to auto-fix issues" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ steps.htmlhint.outcome }}" == "success" ]]; then
+            echo "✅ HTMLHint: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ HTMLHint: Failed - Review HTML files for issues" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ steps.prettier.outcome }}" == "success" ]]; then
+            echo "✅ Prettier: Code is properly formatted" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Prettier: Code needs formatting - Run \`npm run format\` to fix" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail if any check failed
+        if: |
+          steps.eslint.outcome == 'failure' ||
+          steps.stylelint.outcome == 'failure' ||
+          steps.htmlhint.outcome == 'failure' ||
+          steps.prettier.outcome == 'failure'
+        run: |
+          echo "One or more checks failed. Please fix the issues and push again."
+          echo ""
+          echo "To fix issues locally, run:"
+          echo "  npm install        # Install dependencies"
+          echo "  npm run lint:fix   # Auto-fix linting issues"
+          echo "  npm run format     # Format code with Prettier"
+          echo ""
+          echo "Then commit and push the changes."
+          exit 1

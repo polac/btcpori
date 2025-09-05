@@ -56,7 +56,7 @@ header {
 h1 {
     font-size: 3.5rem;
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 main {
@@ -77,12 +77,14 @@ h2 {
     padding: 10px 0;
 }
 
-#about, #telegram-invite {
+#about,
+#telegram-invite {
     margin-top: 40px;
     text-align: center;
 }
 
-#about-content, #telegram-invite p {
+#about-content,
+#telegram-invite p {
     text-align: left;
 }
 
@@ -100,7 +102,7 @@ li {
     margin-bottom: 20px;
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 li p {
@@ -118,7 +120,7 @@ footer {
 }
 
 footer a {
-    color: #0066cc;
+    color: #06c;
     text-decoration: none;
 }
 
@@ -136,7 +138,7 @@ footer a:hover {
 
 .telegram-button {
     display: inline-block;
-    background-color: #0088cc;
+    background-color: #08c;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -147,7 +149,7 @@ footer a:hover {
 }
 
 .telegram-button:hover {
-    background-color: #006699;
+    background-color: #069;
 }
 
 .telegram-button i {
@@ -164,7 +166,9 @@ footer a:hover {
 .share-icon {
     font-size: 24px;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition:
+        transform 0.2s ease-in-out,
+        color 0.2s ease-in-out;
 }
 
 .share-icon:hover {
@@ -200,7 +204,7 @@ footer a:hover {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {

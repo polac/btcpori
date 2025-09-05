@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const SHEET_ID = '1fTzvrBsRQMY_X-dYt-mpjDYv3S2AzYkzybEWkt4lXMI';
     const EVENTS_SHEET_NAME = 'Sheet1';
     const ABOUT_SHEET_NAME = 'Taulukko2';
@@ -37,14 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up modal close functionality
     const modal = document.getElementById('share-modal');
     const closeBtn = document.getElementsByClassName('close')[0];
-    closeBtn.onclick = function() {
+    closeBtn.onclick = function () {
         modal.style.display = 'none';
-    }
-    window.onclick = function(event) {
-        if (event.target == modal) {
+    };
+    window.onclick = function (event) {
+        if (event.target === modal) {
             modal.style.display = 'none';
         }
-    }
+    };
 });
 
 function addLoadingIndicator(sectionId, text) {
@@ -56,35 +56,37 @@ function addLoadingIndicator(sectionId, text) {
 
 function handleEventsResponse(response) {
     const jsonData = response.table;
-    console.log('Received data:', jsonData); // Debug log
-    
-    const events = jsonData.rows.map(row => {
-        console.log('Processing row:', row); // Debug log
-        
-        // Check if row data exists and has the expected structure
-        if (!row || !row.c || !row.c[0] || !row.c[0].v) {
-            console.warn('Invalid row data:', row);
-            return null;
-        }
-        
-        try {
-            const dateParts = row.c[0].v.match(/\d+/g).map(Number);
-            const date = new Date(dateParts[0], dateParts[1], dateParts[2]);
-            const now = new Date();
-            now.setHours(0, 0, 0, 0);  // Set to start of today
-            
-            return {
-                date: date,
-                time: row.c[1] && row.c[1].f ? row.c[1].f.replace('klo ', '') : '',
-                location: row.c[2] && row.c[2].v ? row.c[2].v : '',
-                description: row.c[3] && row.c[3].v ? row.c[3].v : '',
-                isPast: date < now
-            };
-        } catch (error) {
-            console.error('Error processing row:', error, row);
-            return null;
-        }
-    }).filter(event => event !== null); // Remove any null events
+    console.warn('Received data:', jsonData); // Debug log
+
+    const events = jsonData.rows
+        .map(row => {
+            console.warn('Processing row:', row); // Debug log
+
+            // Check if row data exists and has the expected structure
+            if (!row || !row.c || !row.c[0] || !row.c[0].v) {
+                console.warn('Invalid row data:', row);
+                return null;
+            }
+
+            try {
+                const dateParts = row.c[0].v.match(/\d+/g).map(Number);
+                const date = new Date(dateParts[0], dateParts[1], dateParts[2]);
+                const now = new Date();
+                now.setHours(0, 0, 0, 0); // Set to start of today
+
+                return {
+                    date: date,
+                    time: row.c[1] && row.c[1].f ? row.c[1].f.replace('klo ', '') : '',
+                    location: row.c[2] && row.c[2].v ? row.c[2].v : '',
+                    description: row.c[3] && row.c[3].v ? row.c[3].v : '',
+                    isPast: date < now,
+                };
+            } catch (error) {
+                console.error('Error processing row:', error, row);
+                return null;
+            }
+        })
+        .filter(event => event !== null); // Remove any null events
 
     const upcomingList = document.getElementById('upcoming-events-list');
     const pastList = document.getElementById('past-events-list');
@@ -103,20 +105,20 @@ function handleEventsResponse(response) {
     // Separate past and upcoming events
     const pastEvents = events.filter(event => event.isPast);
     const upcomingEvents = events.filter(event => !event.isPast);
-    
+
     // Sort past events from latest to oldest (descending by date)
     pastEvents.sort((a, b) => b.date - a.date);
-    
+
     // Sort upcoming events from earliest to latest (ascending by date)
     upcomingEvents.sort((a, b) => a.date - b.date);
-    
+
     // Add upcoming events to the list
     upcomingEvents.forEach(event => {
         const li = document.createElement('li');
         li.innerHTML = createEventListItem(event, true);
         upcomingList.appendChild(li);
     });
-    
+
     // Add past events to the list (already sorted latest to oldest)
     pastEvents.forEach(event => {
         const li = document.createElement('li');
@@ -151,11 +153,15 @@ function removeLoadingIndicator(sectionId) {
 }
 
 function createEventListItem(event, showShareIcons = true) {
-    const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
-    
+    const formattedDate = event.date.toLocaleDateString('fi-FI', {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+    });
+
     // Create container element
     const container = document.createElement('div');
-    
+
     // Create and add the main event info
     const eventInfo = document.createElement('div');
     const strongElement = document.createElement('strong');
@@ -163,23 +169,23 @@ function createEventListItem(event, showShareIcons = true) {
     eventInfo.appendChild(strongElement);
     eventInfo.appendChild(document.createTextNode(` - ${event.location}`));
     container.appendChild(eventInfo);
-    
+
     // Create and add description paragraph
     const descriptionP = document.createElement('p');
     descriptionP.textContent = event.description;
     container.appendChild(descriptionP);
-    
+
     if (showShareIcons) {
         const shareDiv = document.createElement('div');
         shareDiv.className = 'share-icons';
-        
+
         // Helper function to escape quotes for onclick attributes
-        const escapeForAttr = (str) => str.replace(/'/g, "\\'").replace(/"/g, "\\&quot;");
+        const escapeForAttr = str => str.replace(/'/g, "\\'").replace(/"/g, '\\&quot;');
         const escapedDate = escapeForAttr(formattedDate);
         const escapedTime = escapeForAttr(event.time);
         const escapedLocation = escapeForAttr(event.location);
         const escapedDescription = escapeForAttr(event.description);
-        
+
         shareDiv.innerHTML = `
             <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${escapedDate}', '${escapedTime}', '${escapedLocation}', '${escapedDescription}')" title="Jaa Facebookissa"></i>
             <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${escapedDate}', '${escapedTime}', '${escapedLocation}', '${escapedDescription}')" title="Jaa Twitterissä"></i>
@@ -189,11 +195,11 @@ function createEventListItem(event, showShareIcons = true) {
         `;
         container.appendChild(shareDiv);
     }
-    
+
     return container.innerHTML;
 }
 
-function shareEvent(platform, date, time, location, description) {
+window.shareEvent = function (platform, date, time, location, description) {
     const eventText = `BTC Pori tapahtuma: ${date} ${time} - ${location}. ${description}`;
     const encodedText = encodeURIComponent(eventText);
     const currentUrl = encodeURIComponent(window.location.href);
@@ -202,16 +208,16 @@ function shareEvent(platform, date, time, location, description) {
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}&quote=${encodedText}`,
         twitter: `https://twitter.com/intent/tweet?text=${encodedText}`,
         linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${currentUrl}&title=BTC%20Pori%20Tapahtuma&summary=${encodedText}`,
-        whatsapp: `https://wa.me/?text=${encodedText}`
+        whatsapp: `https://wa.me/?text=${encodedText}`,
     };
 
     const shareUrl = shareUrls[platform];
     if (shareUrl) {
         window.open(shareUrl, '_blank');
     }
-}
+};
 
-function copyEventLink(date, time, location, description) {
+window.copyEventLink = function (date, time, location, description) {
     const eventText = `BTC Pori tapahtuma: ${date} ${time} - ${location}. ${description}`;
     const tempInput = document.createElement('input');
     tempInput.value = eventText;
@@ -220,4 +226,4 @@ function copyEventLink(date, time, location, description) {
     document.execCommand('copy');
     document.body.removeChild(tempInput);
     alert('Tapahtuman tiedot kopioitu leikepöydälle!');
-}
+};
