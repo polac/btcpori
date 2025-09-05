@@ -3,7 +3,7 @@
 # Set variables
 IMAGE_NAME="btcpori"
 CONTAINER_NAME="btcpori-container"  # Added container name for better management
-SERVER_ADDRESS="mika@serveri"
+SERVER_ADDRESS="mika@cervid-main"
 REMOTE_PATH="/tmp/mika_images"
 LOG_FILE="/tmp/btcpori_deploy.log"  # Added log file
 
@@ -18,9 +18,9 @@ trap 'log "Error occurred at line $LINENO"' ERR
 
 log "Starting deployment process..."
 
-# Build Docker image
-log "Building Docker image..."
-docker build -t $IMAGE_NAME .
+# Build Docker image for AMD64 platform
+log "Building Docker image for AMD64 platform..."
+docker build --platform linux/amd64 -t $IMAGE_NAME .
 
 # Create tar archive of the image
 log "Creating image archive..."
@@ -28,7 +28,15 @@ docker save $IMAGE_NAME | gzip > ${IMAGE_NAME}.tar.gz
 
 # Transfer the archive to the server using rsync over SSH with detailed progress
 log "Transferring image to remote server..."
-rsync -avz --progress=2 ${IMAGE_NAME}.tar.gz $SERVER_ADDRESS:$REMOTE_PATH
+# Detect OS and use appropriate progress option
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    PROGRESS_OPT="--progress"
+else
+    # Linux and others
+    PROGRESS_OPT="--progress=2"
+fi
+rsync -avz $PROGRESS_OPT ${IMAGE_NAME}.tar.gz $SERVER_ADDRESS:$REMOTE_PATH
 
 # Execute commands on the remote server
 log "Executing remote commands..."
