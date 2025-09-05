@@ -100,43 +100,31 @@ function handleEventsResponse(response) {
         return;
     }
 
-    events.forEach(event => {
+    // Separate past and upcoming events
+    const pastEvents = events.filter(event => event.isPast);
+    const upcomingEvents = events.filter(event => !event.isPast);
+    
+    // Sort past events from latest to oldest (descending by date)
+    pastEvents.sort((a, b) => b.date - a.date);
+    
+    // Sort upcoming events from earliest to latest (ascending by date)
+    upcomingEvents.sort((a, b) => a.date - b.date);
+    
+    // Add upcoming events to the list
+    upcomingEvents.forEach(event => {
         const li = document.createElement('li');
-        const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
-        let eventHtml = `
-            <strong>${formattedDate} ${event.time}</strong> - ${event.location}
-            <p>${event.description}</p>
-        `;
-        
-        if (!event.isPast) {
-            eventHtml += `
-            <div class="share-icons">
-                <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Facebookissa"></i>
-                <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Twitterissä"></i>
-                <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa LinkedInissä"></i>
-                <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa WhatsAppissa"></i>
-                <i class="fas fa-link share-icon" onclick="copyEventLink('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Kopioi linkki"></i>
-            </div>
-            `;
-        }
-        
-        li.innerHTML = eventHtml;
-        
-        if (event.isPast) {
-            pastList.appendChild(li);
-        } else {
-            upcomingList.appendChild(li);
-        }
+        li.innerHTML = createEventListItem(event, true);
+        upcomingList.appendChild(li);
+    });
+    
+    // Add past events to the list (already sorted latest to oldest)
+    pastEvents.forEach(event => {
+        const li = document.createElement('li');
+        li.innerHTML = createEventListItem(event, false);
+        pastList.appendChild(li);
     });
 
     removeLoadingIndicator('events');
-
-    // Display a message if there are no events
-    if (events.length === 0) {
-        const noEventsMessage = document.createElement('p');
-        noEventsMessage.textContent = 'Ei tapahtumia tällä hetkellä.';
-        document.getElementById('events').appendChild(noEventsMessage);
-    }
 }
 
 function handleAboutResponse(response) {
@@ -160,6 +148,49 @@ function removeLoadingIndicator(sectionId) {
     if (loadingIndicator) {
         loadingIndicator.remove();
     }
+}
+
+function createEventListItem(event, showShareIcons = true) {
+    const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
+    
+    // Create container element
+    const container = document.createElement('div');
+    
+    // Create and add the main event info
+    const eventInfo = document.createElement('div');
+    const strongElement = document.createElement('strong');
+    strongElement.textContent = `${formattedDate} ${event.time}`;
+    eventInfo.appendChild(strongElement);
+    eventInfo.appendChild(document.createTextNode(` - ${event.location}`));
+    container.appendChild(eventInfo);
+    
+    // Create and add description paragraph
+    const descriptionP = document.createElement('p');
+    descriptionP.textContent = event.description;
+    container.appendChild(descriptionP);
+    
+    if (showShareIcons) {
+        const shareDiv = document.createElement('div');
+        shareDiv.className = 'share-icons';
+        
+        // Helper function to escape quotes for onclick attributes
+        const escapeForAttr = (str) => str.replace(/'/g, "\\'").replace(/"/g, "\\&quot;");
+        const escapedDate = escapeForAttr(formattedDate);
+        const escapedTime = escapeForAttr(event.time);
+        const escapedLocation = escapeForAttr(event.location);
+        const escapedDescription = escapeForAttr(event.description);
+        
+        shareDiv.innerHTML = `
+            <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${escapedDate}', '${escapedTime}', '${escapedLocation}', '${escapedDescription}')" title="Jaa Facebookissa"></i>
+            <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${escapedDate}', '${escapedTime}', '${escapedLocation}', '${escapedDescription}')" title="Jaa Twitterissä"></i>
+            <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${escapedDate}', '${escapedTime}', '${escapedLocation}', '${escapedDescription}')" title="Jaa LinkedInissä"></i>
+            <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${escapedDate}', '${escapedTime}', '${escapedLocation}', '${escapedDescription}')" title="Jaa WhatsAppissa"></i>
+            <i class="fas fa-link share-icon" onclick="copyEventLink('${escapedDate}', '${escapedTime}', '${escapedLocation}', '${escapedDescription}')" title="Kopioi linkki"></i>
+        `;
+        container.appendChild(shareDiv);
+    }
+    
+    return container.innerHTML;
 }
 
 function shareEvent(platform, date, time, location, description) {
