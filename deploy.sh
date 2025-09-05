@@ -12,11 +12,34 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a $LOG_FILE
 }
 
+# Cleanup function
+cleanup() {
+    local exit_code=$?
+    log "Performing cleanup..."
+    [[ -f "${IMAGE_NAME}.tar.gz" ]] && rm -f "${IMAGE_NAME}.tar.gz"
+    exit $exit_code
+}
+
 # Error handling
 set -e  # Exit on error
+trap cleanup EXIT
 trap 'log "Error occurred at line $LINENO"' ERR
 
+# Upfront validations
 log "Starting deployment process..."
+log "Performing upfront validations..."
+
+# Check if Docker is available and running
+command -v docker >/dev/null 2>&1 || { log "Docker not found. Please install Docker."; exit 1; }
+docker info >/dev/null 2>&1 || { log "Docker daemon is not running. Please start Docker."; exit 1; }
+
+# Test SSH connectivity
+log "Testing SSH connectivity..."
+ssh -o BatchMode=yes -o ConnectTimeout=10 "$SERVER_ADDRESS" true || { 
+    log "SSH connection to $SERVER_ADDRESS failed. Please check your SSH configuration."; exit 1; 
+}
+
+log "All validations passed. Proceeding with deployment..."
 
 # Build Docker image for AMD64 platform
 log "Building Docker image for AMD64 platform..."
@@ -78,9 +101,5 @@ ssh $SERVER_ADDRESS << EOF
     
     echo "Remote deployment completed successfully!"
 EOF
-
-# Clean up local archive
-log "Cleaning up local files..."
-rm ${IMAGE_NAME}.tar.gz
 
 log "Deployment completed successfully!"
