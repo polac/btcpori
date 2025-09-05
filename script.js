@@ -100,7 +100,18 @@ function handleEventsResponse(response) {
         return;
     }
 
-    events.forEach(event => {
+    // Separate past and upcoming events
+    const pastEvents = events.filter(event => event.isPast);
+    const upcomingEvents = events.filter(event => !event.isPast);
+    
+    // Sort past events from latest to oldest (descending by date)
+    pastEvents.sort((a, b) => b.date - a.date);
+    
+    // Sort upcoming events from earliest to latest (ascending by date)
+    upcomingEvents.sort((a, b) => a.date - b.date);
+    
+    // Add upcoming events to the list
+    upcomingEvents.forEach(event => {
         const li = document.createElement('li');
         const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
         let eventHtml = `
@@ -108,25 +119,31 @@ function handleEventsResponse(response) {
             <p>${event.description}</p>
         `;
         
-        if (!event.isPast) {
-            eventHtml += `
-            <div class="share-icons">
-                <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Facebookissa"></i>
-                <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Twitterissä"></i>
-                <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa LinkedInissä"></i>
-                <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa WhatsAppissa"></i>
-                <i class="fas fa-link share-icon" onclick="copyEventLink('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Kopioi linkki"></i>
-            </div>
-            `;
-        }
+        eventHtml += `
+        <div class="share-icons">
+            <i class="fab fa-facebook share-icon" onclick="shareEvent('facebook', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Facebookissa"></i>
+            <i class="fab fa-twitter share-icon" onclick="shareEvent('twitter', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa Twitterissä"></i>
+            <i class="fab fa-linkedin share-icon" onclick="shareEvent('linkedin', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa LinkedInissä"></i>
+            <i class="fab fa-whatsapp share-icon" onclick="shareEvent('whatsapp', '${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Jaa WhatsAppissa"></i>
+            <i class="fas fa-link share-icon" onclick="copyEventLink('${formattedDate}', '${event.time}', '${event.location}', '${event.description}')" title="Kopioi linkki"></i>
+        </div>
+        `;
         
         li.innerHTML = eventHtml;
+        upcomingList.appendChild(li);
+    });
+    
+    // Add past events to the list (already sorted latest to oldest)
+    pastEvents.forEach(event => {
+        const li = document.createElement('li');
+        const formattedDate = event.date.toLocaleDateString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric' });
+        let eventHtml = `
+            <strong>${formattedDate} ${event.time}</strong> - ${event.location}
+            <p>${event.description}</p>
+        `;
         
-        if (event.isPast) {
-            pastList.appendChild(li);
-        } else {
-            upcomingList.appendChild(li);
-        }
+        li.innerHTML = eventHtml;
+        pastList.appendChild(li);
     });
 
     removeLoadingIndicator('events');
