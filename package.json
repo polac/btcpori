@@ -15,8 +15,8 @@
     "devDependencies": {
         "eslint": "^9.34.0",
         "eslint-config-prettier": "^10.1.8",
-        "htmlhint": "^1.1.4",
-        "prettier": "^3.3.3",
+        "htmlhint": "^1.9.1",
+        "prettier": "^3.8.1",
         "stylelint": "^16.9.0",
         "stylelint-config-standard": "^39.0.0"
     }
